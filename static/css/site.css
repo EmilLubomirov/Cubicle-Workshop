@@ -90,6 +90,11 @@ p.name {
     border-bottom: 1px solid #2b415433;
 }
 
+p.empty{
+    margin-left: 40%;
+    font-weight: bolder;
+}
+
 button, main a.btn {
     border: none;
     padding: 8px;

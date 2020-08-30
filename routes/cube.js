@@ -1,6 +1,7 @@
 const {Router} = require('express');
 const bodyParser = require('body-parser');
 const Cube = require('../models/cube');
+const {getCubeById} = require('../services/cubes');
 
 const router = Router();
 
@@ -15,5 +16,15 @@ router.route('/create')
 
         res.redirect(301, '/');
     });
+
+router.get('/details/:id', (req, res) =>{
+
+    const id = req.params.id;
+    const cube = getCubeById(id);
+
+    res.render('details', {
+        ...cube
+    });
+});
 
 module.exports = router;

@@ -1,7 +1,5 @@
 const uid = require('uniqid');
-const fs = require('fs');
-
-const cubeStoragePath = __dirname + '/..' + '/config/database.json';
+const {saveCubeInFile} = require('../services/cubes');
 
 class Cube{
 
@@ -23,11 +21,7 @@ class Cube{
             difficulty: this.difficulty
         };
 
-        fs.writeFile(cubeStoragePath, JSON.stringify(data), (err) =>{
-            if (err){
-                throw err;
-            }
-        })
+        saveCubeInFile(data);
     }
 }
 
