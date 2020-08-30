@@ -1,13 +1,22 @@
 const express = require('express');
-const handlebars = require('express-handlebars');
 const bodyParser = require('body-parser');
+const hbs = require('express-handlebars');
 
 module.exports = (app) => {
-    
-    //TODO: Setup the view engine
 
-    //TODO: Setup the body parser
+    app.set('view engine', '.hbs');
 
-    //TODO: Setup the static files
+    app.engine( 'hbs', hbs( {
+        extname: '.hbs',
+        layoutsDir: __dirname + '/..' + '/views/layouts/',
+        partialsDir: __dirname + '/..' + '/views/partials/'
+    }));
+
+    app.use(bodyParser.json());
+    app.use(bodyParser.urlencoded({
+        extended: true
+    }));
+
+    app.use('/static', express.static('static'));
 
 };
