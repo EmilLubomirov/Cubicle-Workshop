@@ -13,4 +13,8 @@ require('./config/express')(app);
 app.use('/', indexRouter);
 app.use('/', cubeRouter);
 
+app.use('*', (req, res) =>{
+    res.render('404');
+});
+
 app.listen(config.port, console.log(`Listening on port ${config.port}! Now its up to you...`));
