@@ -23,7 +23,7 @@ const filterCubesByLowerBoundDifficulty = (cubes, from) => {
         return cubes;
     }
 
-    return  cubes.filter(c => c.difficulty >= from);
+    return  cubes.filter(c => c.difficulty >= Number(from));
 
 };
 
@@ -33,7 +33,7 @@ const filterCubesByUpperBoundDifficulty = (cubes, to) => {
         return cubes;
     }
 
-    return  cubes.filter(c => c.difficulty <= to);
+    return  cubes.filter(c => c.difficulty <= Number(to));
 
 };
 
