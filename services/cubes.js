@@ -50,6 +50,10 @@ const getCubeById = async (id) =>{
     return await Cube.findById(id).lean();
 };
 
+const getCubeByIdWithAccessories = async (id) => {
+    return await Cube.findById(id).populate('accessories').lean();
+};
+
 const saveCubeInFile = (cube) =>{
 
     fs.readFile(cubeStoragePath, (err, data) =>{
@@ -69,5 +73,6 @@ module.exports = {
     getAllCubes,
     filterCubesByCriteria,
     getCubeById,
+    getCubeByIdWithAccessories,
     saveCubeInFile
 };

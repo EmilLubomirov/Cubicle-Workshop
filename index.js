@@ -6,6 +6,7 @@ const express = require('express');
 
 const indexRouter = require('./routes');
 const cubeRouter = require('./routes/cube');
+const accessoryRouter = require('./routes/accessory');
 
 const app = express();
 
@@ -26,6 +27,7 @@ require('./config/express')(app);
 
 app.use('/', indexRouter);
 app.use('/', cubeRouter);
+app.use('/', accessoryRouter);
 
 app.use('*', (req, res) =>{
     res.render('404');
