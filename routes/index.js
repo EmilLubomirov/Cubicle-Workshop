@@ -5,9 +5,9 @@ const router = Router();
 const {getAllCubes} = require('../services/cubes');
 const {filterCubesByCriteria} = require('../services/cubes');
 
-router.get('/', (req, res) =>{
+router.get('/', async (req, res) =>{
 
-    let cubes = getAllCubes();
+    let cubes = await getAllCubes();
 
     const reqURL = url.parse(req.url, true);
     const regex = /\/\?search=.*&from=-*\d*&to=-*\d*/gi;
@@ -16,7 +16,7 @@ router.get('/', (req, res) =>{
 
         const query = reqURL.query;
         const {search, from, to} = query;
-        cubes = filterCubesByCriteria(cubes, search, from, to);
+        cubes = await filterCubesByCriteria(cubes, search, from, to);
     }
 
     res.render('index', {

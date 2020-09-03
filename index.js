@@ -1,12 +1,26 @@
 const env = process.env.NODE_ENV || 'development';
 
 const config = require('./config/config')[env];
+const mongoose = require('mongoose');
 const express = require('express');
 
 const indexRouter = require('./routes');
 const cubeRouter = require('./routes/cube');
 
 const app = express();
+
+mongoose.connect(config.databaseURL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+}, (err) =>{
+
+    if (err){
+        console.error(err);
+        throw err;
+    }
+
+    console.log('Connected to database...')
+});
 
 require('./config/express')(app);
 

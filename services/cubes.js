@@ -1,10 +1,10 @@
 const fs = require('fs');
 
 const cubeStoragePath = __dirname + '/..' + '/config/database.json';
+const Cube = require('../models/cube');
 
-const getAllCubes = () =>{
-    const cubes = fs.readFileSync(cubeStoragePath, 'utf-8');
-    return JSON.parse(cubes);
+const getAllCubes = async () =>{
+    return await Cube.find().lean();
 };
 
 const filterCubesByName = (cubes, search) =>{
@@ -46,8 +46,8 @@ const filterCubesByCriteria = (cubes, search, from, to) =>{
     return cubes;
 };
 
-const getCubeById = (id) =>{
-    return getAllCubes().filter(c => c.id === id)[0];
+const getCubeById = async (id) =>{
+    return await Cube.findById(id).lean();
 };
 
 const saveCubeInFile = (cube) =>{
