@@ -1,28 +1,53 @@
-const uid = require('uniqid');
-const {saveCubeInFile} = require('../services/cubes');
+const mongoose = require('mongoose');
+const {Schema} = mongoose;
 
-class Cube{
+const Cube =  new Schema({
 
-    constructor(name, description, imageUrl, difficulty) {
-        this.id = uid();
-        this.name = name;
-        this.description = description;
-        this.imageUrl = imageUrl;
-        this.difficulty = difficulty;
-    }
+    name: {
+        type: String,
+        required: true
+    },
 
-    save(){
+    description: {
+        type: String,
+        required: true,
 
-        const data = {
-            id: this.id,
-            name: this.name,
-            description: this.description,
-            imageUrl: this.imageUrl,
-            difficulty: this.difficulty
-        };
+        validate: {
+            validator: function(val) {
+                return val.length <= 2000;
+            },
+            message: 'Description should not exceed 2000 symbols!'
+        }
+    },
 
-        saveCubeInFile(data);
-    }
-}
+    imageUrl: {
+        type: String,
+        required: true,
 
-module.exports = Cube;
+        validate: {
+            validator: function (val) {
+                return val.startsWith('http://') || val.startsWith('https://');
+            },
+            message: 'Image url should start with http:// or https://!'
+        }
+    },
+
+    difficulty: {
+        type: Number,
+        required: true,
+
+        validate: {
+            validator: function (val) {
+                return val >= 1 && val <= 6;
+            },
+            message: 'Difficulty should be between 1 and 6!'
+        }
+    },
+
+    accessories: [{
+        type: Schema.Types.ObjectID,
+        ref: 'Accessory'
+    }]
+});
+
+module.exports = mongoose.model('Cube', Cube);
