@@ -1,6 +1,7 @@
 const {Router} = require('express');
 const bodyParser = require('body-parser');
 const Cube = require('../models/cube');
+const Accessory = require('../models/accessory');
 const {getCubeById, getCubeByIdWithAccessories} = require('../services/cubes');
 const {getAvailableAccessories} = require('../services/accessories');
 
@@ -37,22 +38,31 @@ router.get('/details/:id', async (req, res) =>{
 router.route('/attach/accessory/:id')
     .get(async (req, res) =>{
 
-    const id = req.params.id;
-    const cube = await getCubeById(id);
-    const accessories = await getAvailableAccessories(cube.accessories);
+    const cubeId = req.params.id;
+    const cube = await getCubeById(cubeId);
+    const accessories = await getAvailableAccessories(cube.accessories, cubeId);
 
     res.render('attachAccessory', {
         ...cube,
         accessories
     });
 })
-    .post((req, res) =>{
+    .post(async (req, res) =>{
 
         const id = req.params.id;
         const accessoryId = req.body.accessory;
 
-        Cube.findOneAndUpdate({_id: id}, {
+        await Cube.findOneAndUpdate({_id: id}, {
             $addToSet: {accessories: accessoryId}
+        }, err =>{
+            if (err){
+                console.error(err);
+                throw err;
+            }
+        });
+
+       await Accessory.findOneAndUpdate({_id: accessoryId}, {
+            $addToSet: {cubes: id}
         }, err =>{
             if (err){
                 console.error(err);

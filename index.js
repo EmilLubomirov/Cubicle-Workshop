@@ -12,7 +12,8 @@ const app = express();
 
 mongoose.connect(config.databaseURL, {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
+    useFindAndModify: false
 }, (err) =>{
 
     if (err){
