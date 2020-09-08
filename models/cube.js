@@ -47,7 +47,12 @@ const Cube =  new Schema({
     accessories: [{
         type: Schema.Types.ObjectID,
         ref: 'Accessory'
-    }]
+    }],
+
+    creatorId: {
+        type: Schema.Types.ObjectID,
+        ref: 'User'
+    }
 });
 
 module.exports = mongoose.model('Cube', Cube);
