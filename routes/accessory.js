@@ -4,7 +4,7 @@ const router = Router();
 
 router.route('/create/accessory')
     .get((req, res) => res.render('createAccessory'))
-    .post((req, res) =>{
+    .post(async (req, res) =>{
 
         const {
             name,
@@ -18,7 +18,7 @@ router.route('/create/accessory')
             description
         });
 
-        accessory.save();
+        await accessory.save();
 
         res.redirect(301, '/');
     });

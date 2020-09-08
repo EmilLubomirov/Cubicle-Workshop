@@ -11,7 +11,7 @@ router.route('/create')
     .get((req, res) =>{
         res.render('create');
     })
-    .post((req, res) =>{
+    .post(async (req, res) =>{
         const {name, description, imageUrl, difficultyLevel} = req.body;
 
         const cube = new Cube({
@@ -20,7 +20,8 @@ router.route('/create')
             imageUrl,
             difficulty: difficultyLevel
         });
-        cube.save();
+
+        await cube.save();
 
         res.redirect(301, '/');
     });
