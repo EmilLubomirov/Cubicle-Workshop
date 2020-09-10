@@ -112,4 +112,18 @@ router.route('/edit/:id')
         res.redirect(301, '/');
     });
 
+router.route('/delete/:id')
+    .get(creatorAccess, (req, res) =>{
+
+        res.render('deleteCubePage', {
+            isLoggedIn: true,
+            ...req.cube
+        })
+    })
+    .post(creatorAccess, async (req, res) =>{
+
+        await Cube.findByIdAndDelete(req.params.id);
+        res.redirect(301, '/');
+    });
+
 module.exports = router;
