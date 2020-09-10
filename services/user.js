@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
+const {getCubeById} = require('../services/cubes');
 
 require('dotenv').config();
 const env = process.env.NODE_ENV || 'development';
@@ -100,7 +101,6 @@ const getUserStatus = (req, res, next) =>{
 
     if (token){
         req.isLoggedIn = true;
-
         const decodedToken = jwt.verify(token, config.secretPhrase);
         req.userId = decodedToken._id;
     }
@@ -131,9 +131,39 @@ const authAccess = (req, res, next) =>{
     }
 };
 
+const creatorAccess = async (req, res, next) =>{
+
+    const token = req.cookies[authCookieName];
+
+    if (!token){
+        return res.redirect('/');
+    }
+
+    try {
+
+        const decodedToken = jwt.verify(token, config.secretPhrase);
+        const userId = decodedToken._id;
+        const cubeId = req.params.id;
+
+        const cube = await getCubeById(cubeId);
+
+        if (cube.creatorId.valueOf().toString() !== userId.valueOf().toString()){
+            return res.redirect(301, '/');
+        }
+
+        req.cube = cube;
+        next();
+    }
+
+    catch (e) {
+        return res.redirect('/');
+    }
+};
+
 module.exports = {
     saveUser,
     authenticateUser,
     authAccess,
-    getUserStatus
+    getUserStatus,
+    creatorAccess
 };

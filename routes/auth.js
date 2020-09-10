@@ -3,7 +3,7 @@ const {saveUser, authenticateUser, getUserStatus, authAccess} = require('../serv
 
 const router = Router();
 
-router.route('/sign-up')
+router.route('/sign-upp')
     .get(getUserStatus, (req, res) => {
 
         if (req.isLoggedIn){
@@ -45,7 +45,7 @@ router.route('/sign-in')
         const user = await authenticateUser(req, res);
 
         if (!user){
-            return res.redirect(301, '/login');
+            return res.redirect(301, '/sign-in');
         }
 
         res.redirect(301, '/');
