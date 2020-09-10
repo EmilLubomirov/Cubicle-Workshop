@@ -4,7 +4,7 @@ const Cube = require('../models/cube');
 const Accessory = require('../models/accessory');
 const {getCubeById, getCubeByIdWithAccessories} = require('../services/cubes');
 const {getAvailableAccessories} = require('../services/accessories');
-const {authAccess, getUserStatus} = require('../services/user');
+const {authAccess, getUserStatus, creatorAccess} = require('../services/user');
 
 const router = Router();
 
@@ -14,7 +14,7 @@ router.route('/create')
             isLoggedIn : true
         });
     })
-    .post(authAccess, async (req, res) =>{
+    .post(authAccess, getUserStatus, async (req, res) =>{
         const {name, description, imageUrl, difficultyLevel} = req.body;
 
         try{
@@ -88,6 +88,28 @@ router.route('/attach/accessory/:id')
         });
 
         res.redirect(301, `/details/${id}`);
+    });
+
+router.route('/edit/:id')
+    .get(creatorAccess, (req, res) =>{
+
+        res.render('editCubePage', {
+            isLoggedIn: true,
+            ...req.cube
+        })
+    })
+    .post(creatorAccess, async (req, res) =>{
+
+        const {name, description, imageUrl, difficultyLevel} = req.body;
+
+        await Cube.findByIdAndUpdate(req.params.id, {
+            name,
+            description,
+            imageUrl,
+            difficulty: difficultyLevel
+        });
+
+        res.redirect(301, '/');
     });
 
 module.exports = router;
