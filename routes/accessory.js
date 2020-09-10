@@ -1,10 +1,14 @@
 const {Router} = require('express');
 const Accessory = require('../models/accessory');
+const {authAccess} = require('../services/user');
+
 const router = Router();
 
 router.route('/create/accessory')
-    .get((req, res) => res.render('createAccessory'))
-    .post(async (req, res) =>{
+    .get(authAccess, (req, res) => res.render('createAccessory', {
+        isLoggedIn: true
+    }))
+    .post(authAccess, async (req, res) =>{
 
         const {
             name,

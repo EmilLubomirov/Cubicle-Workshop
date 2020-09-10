@@ -4,40 +4,55 @@ const Cube = require('../models/cube');
 const Accessory = require('../models/accessory');
 const {getCubeById, getCubeByIdWithAccessories} = require('../services/cubes');
 const {getAvailableAccessories} = require('../services/accessories');
+const {authAccess, getUserStatus} = require('../services/user');
 
 const router = Router();
 
 router.route('/create')
-    .get((req, res) =>{
-        res.render('create');
+    .get(authAccess, (req, res) =>{
+        res.render('create', {
+            isLoggedIn : true
+        });
     })
-    .post(async (req, res) =>{
+    .post(authAccess, async (req, res) =>{
         const {name, description, imageUrl, difficultyLevel} = req.body;
 
-        const cube = new Cube({
-            name,
-            description,
-            imageUrl,
-            difficulty: difficultyLevel
-        });
+        try{
+            const cube = new Cube({
+                name,
+                description,
+                imageUrl,
+                difficulty: difficultyLevel,
+                creatorId: req.userId
+            });
 
-        await cube.save();
+            await cube.save();
+        }
+
+        catch (e) {
+            return res.redirect(301, '/create');
+        }
 
         res.redirect(301, '/');
     });
 
-router.get('/details/:id', async (req, res) =>{
+router.get('/details/:id', authAccess, getUserStatus, async (req, res) =>{
 
     const id = req.params.id;
     const cube = await getCubeByIdWithAccessories(id);
 
+    const isCreator = cube.creatorId &&
+        cube.creatorId.valueOf().toString() === req.userId.valueOf().toString();
+
     res.render('details', {
-        ...cube
+        ...cube,
+        isCreator,
+        isLoggedIn: true
     });
 });
 
 router.route('/attach/accessory/:id')
-    .get(async (req, res) =>{
+    .get(authAccess, async (req, res) =>{
 
     const cubeId = req.params.id;
     const cube = await getCubeById(cubeId);
@@ -45,10 +60,11 @@ router.route('/attach/accessory/:id')
 
     res.render('attachAccessory', {
         ...cube,
-        accessories
+        accessories,
+        isLoggedIn: true
     });
 })
-    .post(async (req, res) =>{
+    .post(authAccess, async (req, res) =>{
 
         const id = req.params.id;
         const accessoryId = req.body.accessory;
