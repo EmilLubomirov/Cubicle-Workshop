@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 const hbs = require('express-handlebars');
 
 module.exports = (app) => {
@@ -17,6 +18,7 @@ module.exports = (app) => {
         extended: true
     }));
 
+    app.use(cookieParser());
     app.use('/static', express.static('static'));
 
 };

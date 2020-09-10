@@ -4,8 +4,9 @@ const router = Router();
 
 const {getAllCubes} = require('../services/cubes');
 const {filterCubesByCriteria} = require('../services/cubes');
+const {getUserStatus} = require('../services/user');
 
-router.get('/', async (req, res) =>{
+router.get('/', getUserStatus,  async (req, res) =>{
 
     let cubes = await getAllCubes();
 
@@ -20,12 +21,16 @@ router.get('/', async (req, res) =>{
     }
 
     res.render('index', {
-        cubes
+        cubes,
+        isLoggedIn: req.isLoggedIn
     });
 });
 
-router.get('/about', (req, res) =>{
-   res.render('about');
+router.get('/about', getUserStatus, (req, res) =>{
+
+   res.render('about', {
+       isLoggedIn: req.isLoggedIn
+   });
 });
 
 module.exports = router;
