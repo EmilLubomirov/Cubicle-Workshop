@@ -1,16 +1,18 @@
 const {Router} = require('express');
-const {saveUser, authenticateUser, getUserStatus, authAccess} = require('../services/user');
+const {saveUser, authenticateUser, getUserStatus} = require('../services/user');
 
 const router = Router();
 
-router.route('/sign-upp')
+router.route('/sign-up')
     .get(getUserStatus, (req, res) => {
 
         if (req.isLoggedIn){
             return res.redirect(301, '/');
         }
 
-        res.render('registerPage')
+        res.render('registerPage', {
+            pageTitle: 'Sign up',
+        })
     })
     .post(getUserStatus, async (req, res) =>{
 
@@ -34,7 +36,9 @@ router.route('/sign-in')
             return res.redirect(301, '/');
         }
 
-        res.render('loginPage')
+        res.render('loginPage', {
+            pageTitle: 'Sign in',
+        })
     })
     .post(getUserStatus, async (req, res) =>{
 
@@ -53,7 +57,7 @@ router.route('/sign-in')
 
 router.get('/sign-out', (req, res) =>{
 
-    res.clearCookie('auth');
+    res.clearCookie('aid');
     res.redirect(301, '/');
 });
 

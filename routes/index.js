@@ -21,6 +21,7 @@ router.get('/', getUserStatus,  async (req, res) =>{
     }
 
     res.render('index', {
+        pageTitle: 'Home',
         cubes,
         isLoggedIn: req.isLoggedIn
     });
@@ -29,6 +30,7 @@ router.get('/', getUserStatus,  async (req, res) =>{
 router.get('/about', getUserStatus, (req, res) =>{
 
    res.render('about', {
+       pageTitle: 'About',
        isLoggedIn: req.isLoggedIn
    });
 });

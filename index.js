@@ -8,7 +8,7 @@ const express = require('express');
 const indexRouter = require('./routes');
 const cubeRouter = require('./routes/cube');
 const accessoryRouter = require('./routes/accessory');
-const authRouter = require('./routes/auth');
+const userRouter = require('./routes/auth');
 
 const {getUserStatus} = require('./services/user');
 
@@ -34,7 +34,7 @@ require('./config/express')(app);
 app.use('/', indexRouter);
 app.use('/', cubeRouter);
 app.use('/', accessoryRouter);
-app.use('/', authRouter);
+app.use('/', userRouter);
 
 app.use('*', getUserStatus, (req, res) =>{
     res.render('404', {

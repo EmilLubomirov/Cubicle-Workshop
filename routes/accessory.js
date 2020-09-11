@@ -5,9 +5,13 @@ const {authAccess} = require('../services/user');
 const router = Router();
 
 router.route('/create/accessory')
-    .get(authAccess, (req, res) => res.render('createAccessory', {
-        isLoggedIn: true
-    }))
+    .get(authAccess, (req, res) => {
+
+        res.render('createAccessory', {
+            pageTitle: 'Create Accessory',
+            isLoggedIn: true
+        })
+    })
     .post(authAccess, async (req, res) =>{
 
         const {
@@ -16,13 +20,19 @@ router.route('/create/accessory')
             description
         } = req.body;
 
-        const accessory = new Accessory({
-            name,
-            imageUrl,
-            description
-        });
+        try {
+            const accessory = new Accessory({
+                name,
+                imageUrl,
+                description
+            });
 
-        await accessory.save();
+            await accessory.save();
+        }
+
+        catch (e) {
+            return res.redirect(301, '/create/accessory');
+        }
 
         res.redirect(301, '/');
     });

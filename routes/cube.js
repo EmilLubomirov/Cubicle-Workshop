@@ -4,17 +4,18 @@ const Cube = require('../models/cube');
 const Accessory = require('../models/accessory');
 const {getCubeById, getCubeByIdWithAccessories} = require('../services/cubes');
 const {getAvailableAccessories} = require('../services/accessories');
-const {authAccess, getUserStatus, creatorAccess} = require('../services/user');
+const {authAccess, creatorAccess} = require('../services/user');
 
 const router = Router();
 
 router.route('/create')
     .get(authAccess, (req, res) =>{
         res.render('create', {
+            pageTitle: 'Create Cube',
             isLoggedIn : true
         });
     })
-    .post(authAccess, getUserStatus, async (req, res) =>{
+    .post(authAccess, async (req, res) =>{
         const {name, description, imageUrl, difficultyLevel} = req.body;
 
         try{
@@ -36,7 +37,7 @@ router.route('/create')
         res.redirect(301, '/');
     });
 
-router.get('/details/:id', authAccess, getUserStatus, async (req, res) =>{
+router.get('/details/:id', authAccess, async (req, res) =>{
 
     const id = req.params.id;
     const cube = await getCubeByIdWithAccessories(id);
@@ -45,6 +46,7 @@ router.get('/details/:id', authAccess, getUserStatus, async (req, res) =>{
         cube.creatorId.valueOf().toString() === req.userId.valueOf().toString();
 
     res.render('details', {
+        pageTitle: 'Details',
         ...cube,
         isCreator,
         isLoggedIn: true
@@ -59,6 +61,7 @@ router.route('/attach/accessory/:id')
     const accessories = await getAvailableAccessories(cube.accessories, cubeId);
 
     res.render('attachAccessory', {
+        pageTitle: 'Attach Accessory',
         ...cube,
         accessories,
         isLoggedIn: true
@@ -94,6 +97,7 @@ router.route('/edit/:id')
     .get(creatorAccess, (req, res) =>{
 
         res.render('editCubePage', {
+            pageTitle: 'Edit',
             isLoggedIn: true,
             ...req.cube
         })
@@ -116,6 +120,7 @@ router.route('/delete/:id')
     .get(creatorAccess, (req, res) =>{
 
         res.render('deleteCubePage', {
+            pageTitle: 'Delete',
             isLoggedIn: true,
             ...req.cube
         })

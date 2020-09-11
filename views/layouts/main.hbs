@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Cubicle</title>
+    <title>{{pageTitle}} | Cubicle</title>
     <link href="/static/css/site.css" type="text/css" rel="stylesheet">
     <link rel='shortcut icon' type='image/x-icon' href='/static/images/favicon.png' />
 </head>
@@ -19,4 +19,17 @@
 
         {{> footer }}
 </body>
+
+<script>
+    const path = location.pathname.toLowerCase();
+
+    if (path.includes('edit') || path.includes('delete')){
+
+        const diff = "{{difficulty}}";
+
+        const cubeDiffOption = document.querySelector('#difficulty').children[diff - 1];
+        cubeDiffOption.selected = true;
+    }
+
+</script>
 </html>

@@ -7,7 +7,7 @@ require('dotenv').config();
 const env = process.env.NODE_ENV || 'development';
 const config = require('../config/config')[env];
 
-const authCookieName = 'auth';
+const authCookieName = 'aid';
 
 const isPasswordValid = (password, repeatPassword) =>{
 
@@ -95,13 +95,21 @@ const authenticateUser = async (req, res) =>{
     return user;
 };
 
+const getAuthToken = (req) =>{
+    return req.cookies[authCookieName];
+};
+
+const getDecodedAuthToken = (token, secret) =>{
+    return jwt.verify(token, secret);
+};
+
 const getUserStatus = (req, res, next) =>{
 
-    const token = req.cookies[authCookieName];
+    const token = getAuthToken(req);
 
     if (token){
         req.isLoggedIn = true;
-        const decodedToken = jwt.verify(token, config.secretPhrase);
+        const decodedToken = getDecodedAuthToken(token, config.secretPhrase);
         req.userId = decodedToken._id;
     }
 
@@ -115,14 +123,15 @@ const getUserStatus = (req, res, next) =>{
 
 const authAccess = (req, res, next) =>{
 
-    const token = req.cookies[authCookieName];
+    const token = getAuthToken(req);
 
     if (!token){
         return res.redirect('/');
     }
 
     try {
-        jwt.verify(token, config.secretPhrase);
+        const decodedToken = getDecodedAuthToken(token, config.secretPhrase);
+        req.userId = decodedToken._id;
         next();
     }
 
@@ -133,7 +142,7 @@ const authAccess = (req, res, next) =>{
 
 const creatorAccess = async (req, res, next) =>{
 
-    const token = req.cookies[authCookieName];
+    const token = getAuthToken(req);
 
     if (!token){
         return res.redirect('/');
@@ -141,7 +150,7 @@ const creatorAccess = async (req, res, next) =>{
 
     try {
 
-        const decodedToken = jwt.verify(token, config.secretPhrase);
+        const decodedToken = getDecodedAuthToken(token, config.secretPhrase);
         const userId = decodedToken._id;
         const cubeId = req.params.id;
 
