@@ -3,7 +3,7 @@ const {saveUser, authenticateUser, getUserStatus} = require('../services/user');
 
 const router = Router();
 
-router.route('/sign-up')
+router.route('/register')
     .get(getUserStatus, (req, res) => {
 
         if (req.isLoggedIn){
@@ -11,7 +11,7 @@ router.route('/sign-up')
         }
 
         res.render('registerPage', {
-            pageTitle: 'Sign up',
+            pageTitle: 'Register',
         })
     })
     .post(getUserStatus, async (req, res) =>{
@@ -23,21 +23,24 @@ router.route('/sign-up')
         const user = await saveUser(req, res);
 
         if (!user){
-            return res.redirect(301, '/sign-up');
+              return res.render('registerPage', {
+                pageTitle: 'Register',
+                error: 'Invalid username or password'
+            });
         }
 
         res.redirect(301, '/');
     });
 
-router.route('/sign-in')
+router.route('/login')
     .get(getUserStatus, (req, res) => {
 
         if (req.isLoggedIn){
             return res.redirect(301, '/');
         }
 
-        res.render('loginPage', {
-            pageTitle: 'Sign in',
+        return res.render('loginPage', {
+            pageTitle: 'Login',
         })
     })
     .post(getUserStatus, async (req, res) =>{
@@ -49,13 +52,16 @@ router.route('/sign-in')
         const user = await authenticateUser(req, res);
 
         if (!user){
-            return res.redirect(301, '/sign-in');
+             res.render('loginPage', {
+                pageTitle: 'Login',
+                error: 'Invalid username or password'
+            });
         }
 
         res.redirect(301, '/');
     });
 
-router.get('/sign-out', (req, res) =>{
+router.get('/log-out', (req, res) =>{
 
     res.clearCookie('aid');
     res.redirect(301, '/');

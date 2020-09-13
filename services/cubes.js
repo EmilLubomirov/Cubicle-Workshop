@@ -23,7 +23,7 @@ const filterCubesByLowerBoundDifficulty = (cubes, from) => {
         return cubes;
     }
 
-    return  cubes.filter(c => c.difficulty >= Number(from));
+    return cubes.filter(c => c.difficulty >= Number(from));
 
 };
 
@@ -54,6 +54,85 @@ const getCubeByIdWithAccessories = async (id) => {
     return await Cube.findById(id).populate('accessories').lean();
 };
 
+const validateCubeName = (name) =>{
+
+    if (!name || name.length < 5){
+        return{
+            error: 'Name should be at least 5 symbols'
+        }
+    }
+
+    if (!RegExp('[a-zA-Z0-9 ]+').test(name)){
+        return  {
+            error: 'Name should contain English letters, digits or whitespaces only'
+        }
+    }
+
+    return 'Name is valid';
+};
+
+const validateCubeDescription = (description) =>{
+
+    const descLength = description.length;
+
+    if (descLength < 20 || descLength > 2000){
+        return {
+            error: 'Description should be between 20 and 2000 symbols'
+        };
+    }
+
+    if (!RegExp(/[a-zA-Z0-9 ]+/).test(description)){
+        return  {
+            error: 'Description should contain English letters, digits or whitespaces only'
+        }
+    }
+
+    return 'Description is valid';
+};
+
+const validateCubeImageUrl = (imageUrl) =>{
+
+    if (!(imageUrl.startsWith('http://') || imageUrl.startsWith('https://'))){
+        return {
+            error: 'Image URL should start with http:// or https://'
+        }
+    }
+
+    return 'Image URL is valid';
+};
+
+
+const validateCube = (cube) =>{
+
+    const {name, description, imageUrl} = cube;
+
+    let status = validateCubeName(name);
+
+    if (status.error){
+        return {
+            error: status.error
+        }
+    }
+
+    status = validateCubeDescription(description);
+
+    if (status.error){
+        return {
+            error: status.error
+        }
+    }
+
+    status = validateCubeImageUrl(imageUrl);
+
+    if (status.error){
+        return  {
+            error: status.error
+        }
+    }
+
+    return 'Cube is valid'
+};
+
 const saveCubeInFile = (cube) =>{
 
     fs.readFile(cubeStoragePath, (err, data) =>{
@@ -74,5 +153,6 @@ module.exports = {
     filterCubesByCriteria,
     getCubeById,
     getCubeByIdWithAccessories,
+    validateCube,
     saveCubeInFile
 };

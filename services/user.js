@@ -11,8 +11,12 @@ const authCookieName = 'aid';
 
 const isPasswordValid = (password, repeatPassword) =>{
 
-    const minLength = 4;
-    return (password.length >= minLength) && (password === repeatPassword)
+    const minLength = 8;
+    const regex = /[a-zA-Z0-9]+/;
+
+    return (RegExp(regex).test(password)) &&
+            (password.length >= minLength) &&
+            (password === repeatPassword);
 };
 
 const generatePassword = async (plainPassword) => {
@@ -28,10 +32,9 @@ const generateToken = (user) =>{
     const {_id} = user;
 
     const payloads = {_id};
-    const options = {expiresIn: '5d'};
     const secret = config.secretPhrase;
 
-    return jwt.sign(payloads, secret, options);
+    return jwt.sign(payloads, secret);
 };
 
 const saveUser = async (req, res) => {
@@ -46,9 +49,9 @@ const saveUser = async (req, res) => {
         return;
     }
 
-    const hashedPassword = await generatePassword(password);
-
     try {
+
+        const hashedPassword = await generatePassword(password);
 
         const user = new User({
             username,
@@ -62,7 +65,7 @@ const saveUser = async (req, res) => {
     }
 
     catch (e) {
-        console.error(e);
+        return false;
     }
 };
 

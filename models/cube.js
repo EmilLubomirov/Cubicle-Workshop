@@ -5,7 +5,18 @@ const Cube =  new Schema({
 
     name: {
         type: String,
-        required: true
+        required: true,
+        minLength: 5,
+        maxLength: 50,
+
+        validate: {
+            validator: function (val) {
+                return RegExp(/[a-zA-Z0-9 ]+/).test(val);
+            },
+
+            message: 'Name should be between 5 and 50 symbols and ' +
+                     'should consist of English letters, digits or whitespaces'
+        }
     },
 
     description: {
@@ -14,9 +25,16 @@ const Cube =  new Schema({
 
         validate: {
             validator: function(val) {
-                return val.length <= 2000;
+                const length = val.length;
+
+                if (length < 20 || length > 2000){
+                    return false;
+                }
+
+                return RegExp(/[a-zA-Z0-9 ]+/).test(val);
             },
-            message: 'Description should not exceed 2000 symbols!'
+            message: 'Description should be between 20 and 2000 symbols and ' +
+                    'should consist of English letters, digits or whitespaces'
         }
     },
 

@@ -5,7 +5,15 @@ const Accessory = new Schema({
 
     name: {
         type: String,
-        required: true
+        required: true,
+        minLength: 5,
+
+        validate: {
+            validator: function (val) {
+                return RegExp(/[a-zA-Z0-9 ]+/).test(val);
+            },
+            message: 'Image url should start with http:// or https://!'
+        }
     },
 
     imageUrl: {
@@ -26,9 +34,15 @@ const Accessory = new Schema({
 
         validate: {
             validator: function(val) {
-                return val.length <= 2000;
+                const length = val.length;
+
+                if (length < 20 || length > 2000){
+                    return false;
+                }
+
+                return RegExp(/[a-zA-Z0-9 ]+/).test(val);
             },
-            message: 'Description should not exceed 2000 symbols!'
+            message: 'Description should be between 20 and 2000 symbols!'
         }
     },
 

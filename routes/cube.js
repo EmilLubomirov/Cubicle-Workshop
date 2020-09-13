@@ -2,7 +2,7 @@ const {Router} = require('express');
 const bodyParser = require('body-parser');
 const Cube = require('../models/cube');
 const Accessory = require('../models/accessory');
-const {getCubeById, getCubeByIdWithAccessories} = require('../services/cubes');
+const {getCubeById, getCubeByIdWithAccessories, validateCube} = require('../services/cubes');
 const {getAvailableAccessories} = require('../services/accessories');
 const {authAccess, creatorAccess} = require('../services/user');
 
@@ -31,7 +31,11 @@ router.route('/create')
         }
 
         catch (e) {
-            return res.redirect(301, '/create');
+            return res.render('create', {
+                pageTitle: 'Create Accessory',
+                isLoggedIn: true,
+                error: 'Invalid data! Try again!'
+            });
         }
 
         res.redirect(301, '/');
@@ -105,6 +109,16 @@ router.route('/edit/:id')
     .post(creatorAccess, async (req, res) =>{
 
         const {name, description, imageUrl, difficultyLevel} = req.body;
+
+        const {error} = validateCube(req.body);
+
+        if (error){
+            return res.render('editCubePage', {
+                pageTitle: 'Edit',
+                isLoggedIn: true,
+                error
+            })
+        }
 
         await Cube.findByIdAndUpdate(req.params.id, {
             name,

@@ -31,7 +31,11 @@ router.route('/create/accessory')
         }
 
         catch (e) {
-            return res.redirect(301, '/create/accessory');
+            return res.render('CreateAccessory', {
+                pageTitle: 'Create Accessory',
+                isLoggedIn: true,
+                error: 'Invalid data! Try again!'
+            });
         }
 
         res.redirect(301, '/');
