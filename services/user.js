@@ -65,7 +65,7 @@ const saveUser = async (req, res) => {
     }
 
     catch (e) {
-        return false;
+        return undefined;
     }
 };
 

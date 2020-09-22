@@ -61,7 +61,7 @@ router.route('/login')
         res.redirect(301, '/');
     });
 
-router.get('/log-out', (req, res) =>{
+router.get('/logout', (req, res) =>{
 
     res.clearCookie('aid');
     res.redirect(301, '/');

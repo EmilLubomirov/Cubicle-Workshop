@@ -34,7 +34,7 @@ const Cube =  new Schema({
                 return RegExp(/[a-zA-Z0-9 ]+/).test(val);
             },
             message: 'Description should be between 20 and 2000 symbols and ' +
-                    'should consist of English letters, digits or whitespaces'
+                'should consist of English letters, digits or whitespaces'
         }
     },
 
